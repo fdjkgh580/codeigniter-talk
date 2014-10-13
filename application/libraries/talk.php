@@ -2,12 +2,12 @@
 /**
  * [快速與 model 交談]
  * 
- * 版本 v1.1
- * 快速呼叫你的model。當你需要model的時候，系統發現還沒有引用檔案，
- * 才會自動利用 $this->load->model() 讀取，所以效能較佳。
+ * 版本 v1.2
+ * 快速呼叫你的 model 與 view 。當你需要model的時候，系統發現還沒有引用檔案，
+ * 才會自動利用 $this->load->model() 讀取，效能較佳。
  *
  * 
- * --使用方法--
+ * --model 使用方法--
  * 
  * 1)
  * controller 中添加
@@ -26,6 +26,20 @@
  * php 5.3 以後的版本可以這麼寫
  * Talk::模組名稱()->模組方法();
  * Talk::album_model()->getlist(102, 1);
+ *
+ *
+ * --view 使用方法--
+ * 
+ * $param->header 	=	"標題";
+ * $param->main   	=	"變化位置";
+ * $param->footer 	=	"底部";
+ *
+ * 直接輸出
+ * Talk::view("frontend/header, frontend/main, frontend/footer", $param);
+ *
+ * 組合回傳後輸出
+ * $result = Talk::view("frontend/header, frontend/main, frontend/footer", $param, true);
+ * echo $result;
  * 
  */
 class Talk
@@ -75,6 +89,45 @@ class Talk
 		$CI->load->model($name);
 
 		return $CI->$name;
+	}
+
+	//讀取視圖的方法
+	public function view()
+	{
+		$CI   =& get_instance();
+
+		$param = func_get_args();
+
+		//若第一個參數是字串, 第二個參數就是傳遞參數, 第三個是是否回傳
+		$string 	= trim($param[0], ", ");
+		$data      	= $param[1];
+		$isreturn 	= $param[2];
+
+		$viewary    = explode(",", $string);
+
+		foreach ($viewary as $file)
+		{
+			$file = trim($file, " ");
+
+			//若要全部回傳，將會依序合併
+			if ($isreturn === true)
+			{
+				$return_ary[] = $CI->load->view($file, $data, true);
+			}
+
+			else 
+			{
+				$CI->load->view($file, $data);
+			}
+		}
+
+		if ($isreturn === true)
+		{
+			return implode(NULL, $return_ary);
+		}
+
+
+			
 	}
 
 
