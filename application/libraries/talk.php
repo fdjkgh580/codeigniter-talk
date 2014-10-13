@@ -1,7 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * [快速與 model 交談]
- *
+ * 
+ * 版本 v1.1
  * 快速呼叫你的model。當你需要model的時候，系統發現還沒有引用檔案，
  * 才會自動利用 $this->load->model() 讀取，所以效能較佳。
  *
@@ -25,6 +26,7 @@
  * php 5.3 以後的版本可以這麼寫
  * Talk::模組名稱()->模組方法();
  * Talk::album_model()->getlist(102, 1);
+ * 
  */
 class Talk
 {
