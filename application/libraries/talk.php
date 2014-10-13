@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * [快速與 model 交談]
+ * [快速與交談]
  * 
  * 版本 v1.2
  * 快速呼叫你的 model 與 view 。當你需要model的時候，系統發現還沒有引用檔案，
