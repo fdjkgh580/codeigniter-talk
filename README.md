@@ -4,6 +4,11 @@ codeigniter-talk
 <br>
 快速呼叫你的model。當你需要model的時候，系統發現還沒有引用檔案，才會自動利用 $this->load->model() 讀取，所以效能較佳。<br>
 <br>
+在你想要的地方添加
+<pre>
+$this->load->library('talk');
+</pre>
+</pre>
 在任何控制器(controller)或視圖(view)中使用你的model<br>
 <pre>
 $this->talk->模組名稱->模組方法();
