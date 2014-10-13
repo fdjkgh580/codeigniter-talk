@@ -1,7 +1,6 @@
 codeigniter-talk
 ================
-
-[快速與 model 交談]<br>
+<h3>[快速與 model 交談，讓你省下繁瑣的打字時間]</h3>
 <br>
 快速呼叫你的model。當你需要model的時候，系統發現還沒有引用檔案，<br>
 才會自動利用 $this->load->model() 讀取，所以效能較佳。<br>
@@ -9,6 +8,7 @@ codeigniter-talk
 在任何控制器(controller)或視圖(view)中使用你的model<br>
 $this->talk->模組名稱->模組方法();<br>
 $this->talk->album_model->getlist(102, 1);<br>
+<br>
 php 5.3 以後還可以這麼用<br>
 talk::模組名稱()->模組方法();<br>
 talk::album_model()->getlist(102, 1);<br>
