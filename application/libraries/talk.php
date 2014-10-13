@@ -19,45 +19,63 @@
  * 2)
  * 在任何控制器(controller)或視圖(view)中使用你的model
  * $this->talk->模組名稱->模組方法();
- * $this->talk->album_model->getlist(102, 1);
+ * $this->talk->album_model->getlist(102, 1);  或
+ * Talk::model("album_model")->getlist(102, 1);
  *
  * php 5.3 以後的版本可以這麼寫
- * talk::模組名稱()->模組方法();
- * talk::album_model()->getlist(102, 1);
- *
+ * Talk::模組名稱()->模組方法();
+ * Talk::album_model()->getlist(102, 1);
  */
 class Talk
 {
-
 
 	//5.2以前，把model當作屬性使用，如 $talk->album_model->getlist(103, 1);
 	//與 __call 同，為了風格一致，使用屬性呼叫model不建議使用。
 	function __get($name)
 	{
-		return self::comm($name);
+		return self::comm("model", $name);
 	}
 
 	//5.2以前，把model當作方法使用，如 $talk->album_model()->getlist(103, 1);
 	public function __call($name, $arguments)
 	{
-		return self::comm($name);
+		return self::comm("model", $name);
 	}
 
 
 	//5.3以後可使用靜態方法如 talk::album_model()->getlist(102, 1);
 	public static function __callStatic($name, $arguments) 
 	{
-		return self::comm($name);
+		return self::comm("model", $name);
 	}
 
-	
-	protected function comm($name)
+	//溝通方式
+	protected function comm($type, $name)
 	{
-		$CI =& get_instance();
+		$CI   =& get_instance();
+
 		$name = strtolower($name);
-		$CI->load->model($name);
-		return $CI->$name = $CI->$name;
+
+		if ($type == "model")
+		{
+			$CI->load->model($name);
+		}
+
+
+
+		return $CI->$name;
 	}
+
+	//讀取模組的方法
+	public function model($name)
+	{
+		$CI   =& get_instance();
+		$CI->load->model($name);
+
+		return $CI->$name;
+	}
+
+
 }
 
 
