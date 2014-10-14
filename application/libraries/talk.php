@@ -2,7 +2,7 @@
 /**
  * [快速與交談]
  * 
- * 版本 v1.2
+ * 版本 v1.3
  * 快速呼叫你的 model 與 view 。當你需要model的時候，系統發現還沒有引用檔案，
  * 才會自動利用 $this->load->model() 讀取，效能較佳。
  *
@@ -35,11 +35,19 @@
  * $param->footer 	=	"底部";
  *
  * 直接輸出
- * Talk::view("frontend/header, frontend/main, frontend/footer", $param);
+ * $this->talk->view("frontend/header, frontend/main, frontend/footer", $param, false); 或
+ * Talk::view("frontend/header, frontend/main, frontend/footer", $param, false);
  *
  * 組合回傳後輸出
  * $result = Talk::view("frontend/header, frontend/main, frontend/footer", $param, true);
  * echo $result;
+ *
+ * php 5.3 後支援 Anonymous callback
+ * Talk::view("test/header, test/main, test/footer", $param, function ($string) 
+ * {
+ *      echo $string;
+ * });
+ *
  * 
  */
 class Talk
@@ -101,33 +109,55 @@ class Talk
 		//若第一個參數是字串, 第二個參數就是傳遞參數, 第三個是是否回傳
 		$string 	= trim($param[0], ", ");
 		$data      	= $param[1];
-		$isreturn 	= $param[2];
+		$third 	= empty($param[2]) ? false : $param[2];
 
 		$viewary    = explode(",", $string);
 
+		
 		foreach ($viewary as $file)
 		{
 			$file = trim($file, " ");
 
-			//若要全部回傳，將會依序合併
-			if ($isreturn === true)
+			//若是布林
+			if (is_bool($third))
 			{
-				$return_ary[] = $CI->load->view($file, $data, true);
+				//若全部回傳，將依序放入陣列
+				if ($third === true)
+				{
+					$join_ary[] = $CI->load->view($file, $data, true);
+				}
+
+				//若不是則輸出
+				else 
+				{
+					$CI->load->view($file, $data);
+				}
 			}
 
-			else 
+			//若是 callback
+			elseif (!is_bool($third))
 			{
-				$CI->load->view($file, $data);
+				$join_ary[] = $CI->load->view($file, $data, true);
 			}
 		}
 
-		if ($isreturn === true)
+		$join_string = implode(NULL, $join_ary);
+
+		//回傳組合陣列
+		if (is_bool($third) and $third === true)
 		{
-			return implode(NULL, $return_ary);
+			return $join_string;
 		}
 
+		//callback
+		else 
+		{
+			return call_user_func($param[2], $join_string);
+		}		
 
-			
+		//若是 function 
+		// call_user_func($param[2], $return_ary);
+
 	}
 
 
